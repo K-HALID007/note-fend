@@ -2,7 +2,7 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #000000;
 }
 
 @theme inline {
@@ -12,15 +12,118 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#__next {
+  height: 100%;
+  width: 100%;
+}
+
+/* Ensure full height layout */
+.h-screen {
+  height: 100vh !important;
+}
+
+.w-screen {
+  width: 100vw !important;
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Ensure textarea preserves formatting */
+textarea {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace !important;
+  line-height: 1.5 !important;
+  tab-size: 4 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  box-sizing: border-box !important;
+  white-space: pre !important;
+  word-wrap: normal !important;
+  overflow-wrap: normal !important;
+  text-rendering: optimizeLegibility !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  font-variant-ligatures: none !important;
+}
+
+/* Word wrap mode */
+textarea.word-wrap {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+/* Force full height for notepad container */
+.notepad-container {
+  height: 100% !important;
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Simple responsive design like original Notepad */
+@media (max-width: 768px) {
+  .h-10, .h-8 {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  .text-sm {
+    font-size: 0.75rem;
+  }
+  
+  .gap-4 {
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .h-10, .h-8 {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  
+  .gap-4 {
+    gap: 0.25rem;
+  }
+  
+  .hidden {
+    display: none !important;
+  }
 }
