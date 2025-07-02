@@ -38,11 +38,13 @@ export const NotepadProvider = ({ children }) => {
   const isModified = activeTab?.isModified || false;
   const filePath = activeTab?.filePath || null;
 
-  // Debug log to check content
-  useEffect(() => {
-    console.log('Active Tab:', activeTab);
-    console.log('Content:', content);
-  }, [activeTab, content]);
+  // Find and replace
+  const [findText, setFindText] = useState('');
+  const [replaceText, setReplaceText] = useState('');
+  const [showFindDialog, setShowFindDialog] = useState(false);
+  const [showReplaceDialog, setShowReplaceDialog] = useState(false);
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [pendingAction, setPendingAction] = useState(null);
 
   // Load saved content on mount
   useEffect(() => {
@@ -79,27 +81,23 @@ export const NotepadProvider = ({ children }) => {
 
   // Tab functions
   const updateActiveTab = (updates) => {
-    console.log('Updating active tab:', activeTabId, 'with:', updates);
     setTabs(prevTabs => {
       const newTabs = prevTabs.map(tab => 
         tab.id === activeTabId 
           ? { ...tab, ...updates }
           : tab
       );
-      console.log('New tabs after update:', newTabs);
       return newTabs;
     });
   };
 
   const addNewTab = () => {
-    // Find the lowest available ID starting from 1
     const existingIds = tabs.map(tab => tab.id);
     let newId = 1;
     while (existingIds.includes(newId)) {
       newId++;
     }
     
-    // Determine the file name based on the ID
     const fileName = newId === 1 ? 'Untitled' : `Untitled-${newId}`;
     
     const newTab = {
@@ -112,11 +110,9 @@ export const NotepadProvider = ({ children }) => {
     setTabs(prevTabs => [...prevTabs, newTab]);
     setActiveTabId(newId);
     
-    // Update nextTabId to be one more than the highest existing ID
     const maxId = Math.max(...existingIds, newId);
     setNextTabId(maxId + 1);
     
-    // Focus on textarea after creating new tab
     setTimeout(() => {
       const textarea = document.querySelector('textarea');
       if (textarea) {
@@ -126,9 +122,7 @@ export const NotepadProvider = ({ children }) => {
   };
 
   const closeTab = (tabId) => {
-    // Don't close if it's the only tab
     if (tabs.length === 1) {
-      // Just clear the content instead of closing
       updateActiveTab({
         content: '',
         fileName: 'Untitled',
@@ -143,7 +137,6 @@ export const NotepadProvider = ({ children }) => {
     if (tabToClose?.isModified) {
       const shouldSave = window.confirm(`Do you want to save changes to ${tabToClose.fileName}?`);
       if (shouldSave) {
-        // Save the file before closing
         downloadFile(tabToClose.content, tabToClose.fileName);
       }
     }
@@ -151,7 +144,6 @@ export const NotepadProvider = ({ children }) => {
     const newTabs = tabs.filter(tab => tab.id !== tabId);
     setTabs(newTabs);
     
-    // If we closed the active tab, switch to another tab
     if (tabId === activeTabId) {
       const newActiveTab = newTabs[newTabs.length - 1];
       setActiveTabId(newActiveTab.id);
@@ -168,6 +160,24 @@ export const NotepadProvider = ({ children }) => {
     }, 100);
   };
 
+  const updateContent = (newContent) => {
+    updateActiveTab({
+      content: newContent,
+      isModified: true
+    });
+  };
+
+  // File operations
+  const downloadFile = (content, filename) => {
+    const element = document.createElement('a');
+    const file = new Blob([content], { type: 'text/plain' });
+    element.href = URL.createObjectURL(file);
+    element.download = filename;
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
+
   const createNewDocument = () => {
     updateActiveTab({
       content: '',
@@ -179,7 +189,6 @@ export const NotepadProvider = ({ children }) => {
     localStorage.setItem('notepad-content', '');
     localStorage.setItem('notepad-filename', 'Untitled');
     
-    // Focus on textarea after creating new file
     setTimeout(() => {
       const textarea = document.querySelector('textarea');
       if (textarea) {
@@ -197,47 +206,6 @@ export const NotepadProvider = ({ children }) => {
     }
   };
 
-  const handleSaveDialogSave = () => {
-    setShowSaveDialog(false);
-    if (filePath) {
-      downloadFile(content, fileName);
-    } else {
-      const newFileName = prompt('Save As - Enter filename:', fileName.endsWith('.txt') ? fileName : fileName + '.txt');
-      if (newFileName) {
-        downloadFile(content, newFileName);
-      } else {
-        // User cancelled save dialog, don't proceed with pending action
-        setPendingAction(null);
-        return;
-      }
-    }
-    
-    // Execute pending action after save
-    if (pendingAction === 'new') {
-      createNewDocument();
-    } else if (pendingAction === 'open') {
-      openFileDialog();
-    }
-    setPendingAction(null);
-  };
-
-  const handleSaveDialogDontSave = () => {
-    setShowSaveDialog(false);
-    
-    // Execute pending action without saving
-    if (pendingAction === 'new') {
-      createNewDocument();
-    } else if (pendingAction === 'open') {
-      openFileDialog();
-    }
-    setPendingAction(null);
-  };
-
-  const handleSaveDialogCancel = () => {
-    setShowSaveDialog(false);
-    setPendingAction(null);
-  };
-
   const openFileDialog = () => {
     const input = document.createElement('input');
     input.type = 'file';
@@ -248,9 +216,7 @@ export const NotepadProvider = ({ children }) => {
         const reader = new FileReader();
         reader.onload = (event) => {
           const fileContent = event.target.result;
-          console.log('File content read:', fileContent);
           
-          // Update the active tab with file content
           setTabs(prevTabs => 
             prevTabs.map(tab => 
               tab.id === activeTabId 
@@ -268,7 +234,6 @@ export const NotepadProvider = ({ children }) => {
           localStorage.setItem('notepad-content', fileContent);
           localStorage.setItem('notepad-filename', file.name);
           
-          // Focus on textarea after opening file
           setTimeout(() => {
             const textarea = document.querySelector('textarea');
             if (textarea) {
@@ -293,7 +258,6 @@ export const NotepadProvider = ({ children }) => {
 
   const saveFile = () => {
     if (filePath) {
-      // For web, we'll download the file
       downloadFile(content, fileName);
       updateActiveTab({ isModified: false });
     } else {
@@ -314,21 +278,43 @@ export const NotepadProvider = ({ children }) => {
     }
   };
 
-  const downloadFile = (content, filename) => {
-    const element = document.createElement('a');
-    const file = new Blob([content], { type: 'text/plain' });
-    element.href = URL.createObjectURL(file);
-    element.download = filename;
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
+  // Dialog handlers
+  const handleSaveDialogSave = () => {
+    setShowSaveDialog(false);
+    if (filePath) {
+      downloadFile(content, fileName);
+    } else {
+      const newFileName = prompt('Save As - Enter filename:', fileName.endsWith('.txt') ? fileName : fileName + '.txt');
+      if (newFileName) {
+        downloadFile(content, newFileName);
+      } else {
+        setPendingAction(null);
+        return;
+      }
+    }
+    
+    if (pendingAction === 'new') {
+      createNewDocument();
+    } else if (pendingAction === 'open') {
+      openFileDialog();
+    }
+    setPendingAction(null);
   };
 
-  const updateContent = (newContent) => {
-    updateActiveTab({
-      content: newContent,
-      isModified: true
-    });
+  const handleSaveDialogDontSave = () => {
+    setShowSaveDialog(false);
+    
+    if (pendingAction === 'new') {
+      createNewDocument();
+    } else if (pendingAction === 'open') {
+      openFileDialog();
+    }
+    setPendingAction(null);
+  };
+
+  const handleSaveDialogCancel = () => {
+    setShowSaveDialog(false);
+    setPendingAction(null);
   };
 
   // Edit operations
@@ -353,7 +339,6 @@ export const NotepadProvider = ({ children }) => {
         const newContent = content.substring(0, start) + text + content.substring(end);
         updateContent(newContent);
         
-        // Set cursor position after paste
         setTimeout(() => {
           textarea.selectionStart = textarea.selectionEnd = start + text.length;
           textarea.focus();
@@ -379,7 +364,6 @@ export const NotepadProvider = ({ children }) => {
       const newContent = content.substring(0, start) + dateTime + content.substring(end);
       updateContent(newContent);
       
-      // Set cursor position after insert
       setTimeout(() => {
         textarea.selectionStart = textarea.selectionEnd = start + dateTime.length;
         textarea.focus();
@@ -418,25 +402,59 @@ export const NotepadProvider = ({ children }) => {
     changeZoom(100);
   };
 
-  // Find and replace
-  const [findText, setFindText] = useState('');
-  const [replaceText, setReplaceText] = useState('');
-  const [showFindDialog, setShowFindDialog] = useState(false);
-  const [showReplaceDialog, setShowReplaceDialog] = useState(false);
-  const [showSaveDialog, setShowSaveDialog] = useState(false);
-  const [pendingAction, setPendingAction] = useState(null);
-
+  // Find and replace functions
   const find = (text) => {
     if (!text) return;
     const textarea = document.querySelector('textarea');
     if (textarea) {
       const content = textarea.value.toLowerCase();
       const searchText = text.toLowerCase();
-      const index = content.indexOf(searchText, textarea.selectionStart);
+      let startPos = textarea.selectionEnd || 0;
+      
+      // Search from current position
+      let index = content.indexOf(searchText, startPos);
+      
+      // If not found, search from beginning
+      if (index === -1) {
+        index = content.indexOf(searchText, 0);
+      }
       
       if (index !== -1) {
         textarea.focus();
         textarea.setSelectionRange(index, index + text.length);
+        // Scroll to make selection visible
+        const lineHeight = 20;
+        const lineNumber = content.substring(0, index).split('\n').length;
+        textarea.scrollTop = Math.max(0, (lineNumber - 5) * lineHeight);
+      } else {
+        alert('Cannot find "' + text + '"');
+      }
+    }
+  };
+
+  const findPrevious = (text) => {
+    if (!text) return;
+    const textarea = document.querySelector('textarea');
+    if (textarea) {
+      const content = textarea.value.toLowerCase();
+      const searchText = text.toLowerCase();
+      let startPos = textarea.selectionStart || content.length;
+      
+      // Search backwards from current position
+      let index = content.lastIndexOf(searchText, startPos - 1);
+      
+      // If not found, search from end
+      if (index === -1) {
+        index = content.lastIndexOf(searchText);
+      }
+      
+      if (index !== -1) {
+        textarea.focus();
+        textarea.setSelectionRange(index, index + text.length);
+        // Scroll to make selection visible
+        const lineHeight = 20;
+        const lineNumber = content.substring(0, index).split('\n').length;
+        textarea.scrollTop = Math.max(0, (lineNumber - 5) * lineHeight);
       } else {
         alert('Cannot find "' + text + '"');
       }
@@ -444,6 +462,7 @@ export const NotepadProvider = ({ children }) => {
   };
 
   const replace = (findText, replaceText) => {
+    if (!findText) return;
     const textarea = document.querySelector('textarea');
     if (textarea) {
       const selectedText = textarea.value.substring(textarea.selectionStart, textarea.selectionEnd);
@@ -458,13 +477,25 @@ export const NotepadProvider = ({ children }) => {
           textarea.selectionEnd = start + replaceText.length;
           textarea.focus();
         }, 0);
+      } else {
+        // If no text is selected or doesn't match, find first occurrence
+        find(findText);
       }
     }
   };
 
   const replaceAll = (findText, replaceText) => {
-    const newContent = content.replace(new RegExp(findText, 'gi'), replaceText);
+    if (!findText) return;
+    const regex = new RegExp(findText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+    const replacements = (content.match(regex) || []).length;
+    const newContent = content.replace(regex, replaceText);
     updateContent(newContent);
+    
+    if (replacements > 0) {
+      alert(`Replaced ${replacements} occurrence(s)`);
+    } else {
+      alert('Cannot find "' + findText + '"');
+    }
   };
 
   const value = {
@@ -523,6 +554,7 @@ export const NotepadProvider = ({ children }) => {
     setShowFindDialog,
     setShowReplaceDialog,
     find,
+    findPrevious,
     replace,
     replaceAll
   };

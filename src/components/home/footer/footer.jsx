@@ -59,7 +59,7 @@ const Footer = () => {
   }, []);
 
   return (
-    <div className="w-full h-8 bg-gray-50 text-gray-600 flex justify-between items-center px-8 text-xs flex-shrink-0 border-t border-gray-200">
+    <div className="w-full h-8 bg-gray-800 text-gray-300 flex justify-between items-center text-xs flex-shrink-0 border-t border-gray-700" style={{paddingLeft: '100px', paddingRight: '32px'}}>
       <div className="flex gap-4">
         <span className="font-medium">Ln {cursorPosition.line}, Col {cursorPosition.col}</span>
         <span className="hidden sm:inline">{characterCount} characters</span>

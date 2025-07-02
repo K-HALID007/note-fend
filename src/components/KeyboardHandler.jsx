@@ -49,6 +49,26 @@ const KeyboardHandler = () => {
             e.preventDefault();
             setShowReplaceDialog(true);
             break;
+          case 'g':
+            e.preventDefault();
+            const lineNumber = prompt('Line number:');
+            if (lineNumber) {
+              const textarea = document.querySelector('textarea');
+              if (textarea) {
+                const lines = textarea.value.split('\n');
+                const targetLine = parseInt(lineNumber) - 1;
+                if (targetLine >= 0 && targetLine < lines.length) {
+                  let position = 0;
+                  for (let i = 0; i < targetLine; i++) {
+                    position += lines[i].length + 1;
+                  }
+                  textarea.focus();
+                  textarea.setSelectionRange(position, position);
+                  textarea.scrollTop = targetLine * 20;
+                }
+              }
+            }
+            break;
           case 'p':
             e.preventDefault();
             window.print();

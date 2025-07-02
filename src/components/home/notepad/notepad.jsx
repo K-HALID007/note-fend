@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { useNotepad } from "@/context/NotepadContext";
 
 const Notepad = () => {
   const textareaRef = useRef(null);
+  const [showOptions, setShowOptions] = useState(false);
   const {
     content,
     updateContent,
@@ -20,6 +21,7 @@ const Notepad = () => {
     replaceText,
     setReplaceText,
     find,
+    findPrevious,
     replace,
     replaceAll,
     activeTabId
@@ -93,13 +95,13 @@ const Notepad = () => {
   };
 
   return (
-    <div className="flex-1 flex flex-col bg-white min-h-0 notepad-container">
-      {/* Main Textarea - Microsoft Notepad Style */}
+    <div className="flex-1 flex flex-col bg-gray-900 min-h-0 notepad-container">
+      {/* Main Textarea - Microsoft Notepad Dark Style */}
       <textarea
         ref={textareaRef}
         value={content}
         onChange={(e) => updateContent(e.target.value)}
-        className={`flex-1 w-full pl-8 pr-12 py-4 bg-white text-black resize-none outline-none border-none ${wordWrap ? 'word-wrap' : ''}`}
+        className={`flex-1 w-full pr-12 py-4 bg-gray-900 text-white resize-none outline-none border-none ${wordWrap ? 'word-wrap' : ''}`}
         style={{
           fontSize: `${Math.round(fontSize * (zoom / 100))}px`,
           lineHeight: '1.5',
@@ -108,7 +110,9 @@ const Notepad = () => {
           whiteSpace: wordWrap ? 'pre-wrap' : 'pre',
           overflowWrap: wordWrap ? 'break-word' : 'normal',
           wordBreak: wordWrap ? 'break-word' : 'normal',
-          overflow: 'auto'
+          overflow: 'auto',
+          paddingLeft: '40px',
+          caretColor: 'white'
         }}
         placeholder=""
         spellCheck={false}
@@ -116,104 +120,174 @@ const Notepad = () => {
         wrap={wordWrap ? 'soft' : 'off'}
       />
 
-      {/* Find Dialog */}
-      {showFindDialog && (
-        <div className="fixed top-20 right-8 bg-white border border-gray-300 p-4 rounded-lg shadow-lg z-50 min-w-80">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-gray-800 text-sm font-medium">Find</h3>
+      {/* Find/Replace Dialog - Dark Windows 11 Style */}
+      {(showFindDialog || showReplaceDialog) && (
+        <div className="fixed inset-0 flex items-start justify-center pt-16 z-50 dialog-overlay animate-fadeIn">
+          <div className="bg-gray-800 border border-gray-600 shadow-xl w-80 rounded-lg animate-slideDown">
+          {/* Title Bar */}
+          <div className="bg-gray-700 px-3 py-2 border-b border-gray-600 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium text-gray-200">Find and Replace</span>
+              <button
+                onClick={() => {
+                  if (showReplaceDialog) {
+                    setShowReplaceDialog(false);
+                    setShowFindDialog(true);
+                  } else {
+                    setShowFindDialog(false);
+                    setShowReplaceDialog(true);
+                  }
+                }}
+                className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-gray-200 hover:bg-gray-600 rounded text-xs"
+                title={showReplaceDialog ? "Switch to Find" : "Switch to Replace"}
+              >
+                {showReplaceDialog ? '▲' : '▼'}
+              </button>
+            </div>
             <button
-              onClick={() => setShowFindDialog(false)}
-              className="text-gray-400 hover:text-gray-600 text-lg leading-none"
+              onClick={() => {
+                setShowFindDialog(false);
+                setShowReplaceDialog(false);
+              }}
+              className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-gray-200 hover:bg-gray-600 rounded text-xs"
             >
               ×
             </button>
           </div>
-          <form onSubmit={handleFindSubmit} className="space-y-3">
-            <input
-              type="text"
-              value={findText}
-              onChange={(e) => setFindText(e.target.value)}
-              placeholder="Find what:"
-              className="w-full px-3 py-2 bg-white text-black border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500"
-              autoFocus
-            />
-            <div className="flex gap-2">
-              <button
-                type="submit"
-                className="px-4 py-2 bg-blue-500 text-white rounded text-sm hover:bg-blue-600 transition"
-              >
-                Find Next
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowFindDialog(false)}
-                className="px-4 py-2 bg-gray-500 text-white rounded text-sm hover:bg-gray-600 transition"
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
-
-      {/* Replace Dialog */}
-      {showReplaceDialog && (
-        <div className="fixed top-20 right-8 bg-white border border-gray-300 p-4 rounded-lg shadow-lg z-50 min-w-80">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-gray-800 text-sm font-medium">Replace</h3>
-            <button
-              onClick={() => setShowReplaceDialog(false)}
-              className="text-gray-400 hover:text-gray-600 text-lg leading-none"
-            >
-              ×
-            </button>
+          
+          {/* Content */}
+          <div className="p-3 space-y-3">
+            <form onSubmit={showReplaceDialog ? handleReplaceSubmit : handleFindSubmit}>
+              {/* Find Input */}
+              <div className="flex items-center gap-2">
+                <label className="text-sm text-gray-300 w-16">Find what:</label>
+                <div className="flex-1 relative">
+                  <input
+                    type="text"
+                    value={findText}
+                    onChange={(e) => setFindText(e.target.value)}
+                    className="w-full px-2 py-1 pr-16 border border-gray-600 bg-gray-700 text-white text-sm focus:outline-none focus:border-blue-400"
+                    autoFocus
+                  />
+                  {/* Navigation Arrows inside input */}
+                  <div className="absolute right-1 top-1/2 transform -translate-y-1/2 flex items-center gap-0">
+                    <button
+                      type="button"
+                      onClick={() => findPrevious(findText)}
+                      disabled={!findText}
+                      className="w-5 h-5 flex items-center justify-center hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-xs text-gray-300"
+                      title="Find Previous"
+                    >
+                      ˄
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => find(findText)}
+                      disabled={!findText}
+                      className="w-5 h-5 flex items-center justify-center hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-xs text-gray-300"
+                      title="Find Next"
+                    >
+                      ˅
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Replace Input - Only show when in replace mode */}
+              {showReplaceDialog && (
+                <div className="flex items-center gap-2">
+                  <label className="text-sm text-gray-300 w-16">Replace with:</label>
+                  <div className="flex-1 relative">
+                    <input
+                      type="text"
+                      value={replaceText}
+                      onChange={(e) => setReplaceText(e.target.value)}
+                      className="w-full px-2 py-1 border border-gray-600 bg-gray-700 text-white text-sm focus:outline-none focus:border-blue-400"
+                    />
+                  </div>
+                </div>
+              )}
+              
+              {/* Settings and Match Count */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1">
+                  {/* Settings Icon */}
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setShowOptions(!showOptions)}
+                      className="w-6 h-6 flex items-center justify-center border border-gray-600 bg-gray-700 hover:bg-gray-600 text-xs text-gray-300"
+                      title="Search Options"
+                    >
+                      ⚙
+                    </button>
+                    
+                    {/* Options Dropdown */}
+                    {showOptions && (
+                      <div className="absolute top-full left-0 mt-1 bg-gray-700 border border-gray-600 shadow-lg rounded p-2 z-10 w-40">
+                        <div className="space-y-1">
+                          <label className="flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
+                            <input type="checkbox" className="w-3 h-3" />
+                            <span>Match case</span>
+                          </label>
+                          <label className="flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
+                            <input type="checkbox" className="w-3 h-3" />
+                            <span>Wrap around</span>
+                          </label>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                {findText && (
+                  <span className="text-xs text-gray-400">
+                    {content.toLowerCase().split(findText.toLowerCase()).length - 1} matches
+                  </span>
+                )}
+              </div>
+              
+              {/* Buttons */}
+              {showReplaceDialog ? (
+                <div className="grid grid-cols-2 gap-1">
+                  <button
+                    type="button"
+                    onClick={() => find(findText)}
+                    disabled={!findText}
+                    className="px-3 py-1 bg-gray-700 border border-gray-600 text-sm hover:bg-gray-600 disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed text-gray-200"
+                  >
+                    Find Next
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={!findText}
+                    className="px-3 py-1 bg-gray-700 border border-gray-600 text-sm hover:bg-gray-600 disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed text-gray-200"
+                  >
+                    Replace
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleReplaceAll}
+                    disabled={!findText}
+                    className="px-3 py-1 bg-gray-700 border border-gray-600 text-sm hover:bg-gray-600 disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed text-gray-200"
+                  >
+                    Replace All
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowFindDialog(false);
+                      setShowReplaceDialog(false);
+                    }}
+                    className="px-3 py-1 bg-gray-700 border border-gray-600 text-sm hover:bg-gray-600 text-gray-200"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : null}
+            </form>
           </div>
-          <form onSubmit={handleReplaceSubmit} className="space-y-3">
-            <input
-              type="text"
-              value={findText}
-              onChange={(e) => setFindText(e.target.value)}
-              placeholder="Find what:"
-              className="w-full px-3 py-2 bg-white text-black border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500"
-              autoFocus
-            />
-            <input
-              type="text"
-              value={replaceText}
-              onChange={(e) => setReplaceText(e.target.value)}
-              placeholder="Replace with:"
-              className="w-full px-3 py-2 bg-white text-black border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500"
-            />
-            <div className="flex gap-2 flex-wrap">
-              <button
-                type="button"
-                onClick={() => find(findText)}
-                className="px-3 py-2 bg-blue-500 text-white rounded text-sm hover:bg-blue-600 transition"
-              >
-                Find Next
-              </button>
-              <button
-                type="submit"
-                className="px-3 py-2 bg-green-500 text-white rounded text-sm hover:bg-green-600 transition"
-              >
-                Replace
-              </button>
-              <button
-                type="button"
-                onClick={handleReplaceAll}
-                className="px-3 py-2 bg-orange-500 text-white rounded text-sm hover:bg-orange-600 transition"
-              >
-                Replace All
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowReplaceDialog(false)}
-                className="px-3 py-2 bg-gray-500 text-white rounded text-sm hover:bg-gray-600 transition"
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
+          </div>
         </div>
       )}
     </div>

@@ -127,3 +127,37 @@ textarea.word-wrap {
     display: none !important;
   }
 }
+
+/* Find Dialog Animation */
+@keyframes slideDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.animate-slideDown {
+  animation: slideDown 0.3s ease-out forwards;
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+/* Smooth transitions for dialog */
+.dialog-overlay {
+  background-color: rgba(0, 0, 0, 0.05);
+}

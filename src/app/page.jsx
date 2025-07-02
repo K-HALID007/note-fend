@@ -10,7 +10,7 @@ import SaveDialog from "@/components/SaveDialog";
 export default function Page() {
   return (
     <NotepadProvider>
-      <div className="h-screen w-screen flex flex-col overflow-hidden bg-[#1e1e1e]">
+      <div className="h-screen w-screen flex flex-col overflow-hidden bg-gray-900">
         <KeyboardHandler />
         <div className="flex-shrink-0">
           <Navbar />
