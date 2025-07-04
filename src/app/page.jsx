@@ -5,7 +5,8 @@ import NotePad from "@/components/home/notepad/notepad";
 import Footer from "@/components/home/footer/footer";
 import KeyboardHandler from "@/components/KeyboardHandler";
 import SaveDialog from "@/components/SaveDialog";
-  import { NotepadProvider, useNotepad } from "@/context/NotepadContext";
+import TabBar from "@/components/TabBar";
+import { NotepadProvider, useNotepad } from "@/context/NotepadContext";
 
 export default function Page() {
   return (
@@ -14,6 +15,9 @@ export default function Page() {
         <KeyboardHandler />
         <div className="flex-shrink-0">
           <Navbar />
+        </div>
+        <div className="flex-shrink-0">
+          <TabBar />
         </div>
         <div className="flex-1 min-h-0">
           <NotePad />

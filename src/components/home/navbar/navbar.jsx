@@ -59,68 +59,40 @@ const Navbar = () => {
 
   return (
     <div className="w-full bg-gray-800 text-white flex-shrink-0">
-      {/* Title Bar with Tabs - Windows 11 Dark Style */}
-      <div className="h-12 flex items-center justify-between bg-gray-800 border-b border-gray-700" style={{paddingLeft: '40px', paddingRight: '32px'}}>
-        {/* Left: App Icon + Tabs */}
-        <div className="flex items-center gap-3 flex-1 min-w-0">
-          <div className="w-6 h-6 bg-blue-600 rounded flex items-center justify-center flex-shrink-0">
+      {/* Title Bar - Seamless Design */}
+      <div className="h-8 flex items-center justify-between bg-gray-800" style={{paddingLeft: '40px', paddingRight: '32px'}}>
+        {/* Left: App Icon + Title */}
+        <div className="flex items-center gap-3">
+          <div className="w-5 h-5 bg-blue-600 rounded flex items-center justify-center flex-shrink-0">
             <span className="text-white text-xs font-bold">N</span>
           </div>
-          
-          {/* Tabs integrated in title bar */}
-          <div className="flex items-center gap-1 flex-1 min-w-0">
-            {tabs.map((tab) => (
-              <div
-                key={tab.id}
-                className={`flex items-center min-w-0 max-w-48 rounded-lg px-3 py-1 ${
-                  tab.id === activeTabId 
-                    ? 'bg-transparent text-white border-b-2 border-blue-500' 
-                    : 'bg-transparent text-gray-300 hover:bg-gray-700'
-                }`}
-              >
-                {/* Tab content */}
-                <button
-                  onClick={() => switchTab(tab.id)}
-                  className="flex items-center gap-2 min-w-0 flex-1 text-left"
-                >
-                  <span className="text-sm truncate font-medium">
-                    {tab.isModified ? '• ' : ''}{tab.fileName}
-                  </span>
-                </button>
-                
-                {/* Close button */}
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    closeTab(tab.id);
-                  }}
-                  className="flex items-center justify-center w-5 h-5 hover:bg-gray-600 hover:text-white rounded-full text-gray-400 ml-2 transition-all duration-200"
-                  title="Close tab"
-                >
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-                  </svg>
-                </button>
-              </div>
-            ))}
-            
-            {/* Add new tab button */}
-            <button
-              onClick={addNewTab}
-              className="flex items-center justify-center w-8 h-8 text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg transition ml-2"
-              title="New tab"
-            >
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M8 2a1 1 0 011 1v4h4a1 1 0 110 2H9v4a1 1 0 11-2 0V9H3a1 1 0 110-2h4V3a1 1 0 011-1z"/>
-              </svg>
-            </button>
-          </div>
+          <span className="text-sm text-gray-300 font-medium">
+            {fileName}{isModified ? ' •' : ''} - Notepad
+          </span>
+        </div>
+        
+        {/* Right: Window Controls */}
+        <div className="flex items-center gap-1">
+          <button className="w-8 h-6 hover:bg-gray-700 flex items-center justify-center text-gray-400 hover:text-white transition-colors">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor">
+              <path d="M0 5h10"/>
+            </svg>
+          </button>
+          <button className="w-8 h-6 hover:bg-gray-700 flex items-center justify-center text-gray-400 hover:text-white transition-colors">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor">
+              <path d="M0 0h10v10H0z" fillOpacity="0" stroke="currentColor"/>
+            </svg>
+          </button>
+          <button className="w-8 h-6 hover:bg-red-600 flex items-center justify-center text-gray-400 hover:text-white transition-colors">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor">
+              <path d="M0 0l10 10M10 0L0 10"/>
+            </svg>
+          </button>
         </div>
       </div>
 
-      {/* Menu Bar - Windows 11 Dark Style */}
-      <div className="h-10 bg-gray-800 flex items-center text-sm relative gap-6 border-b border-gray-700" style={{paddingLeft: '40px', paddingRight: '32px'}} ref={dropdownRef}>
+      {/* Menu Bar - Seamless Design */}
+      <div className="h-10 bg-gray-800 flex items-center text-sm relative gap-6" style={{paddingLeft: '40px', paddingRight: '32px'}} ref={dropdownRef}>
         {/* File Menu */}
         <div className="relative">
           <button 

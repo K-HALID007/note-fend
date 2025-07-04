@@ -1,0 +1,48 @@
+{
+  "editor.tokenColorCustomizations": {
+    "textMateRules": [
+      {
+        "scope": "keyword",
+        "settings": {
+          "foreground": "#569cd6"
+        }
+      },
+      {
+        "scope": "string",
+        "settings": {
+          "foreground": "#ce9178"
+        }
+      },
+      {
+        "scope": "variable",
+        "settings": {
+          "foreground": "#9cdcfe"
+        }
+      },
+      {
+        "scope": "constant.numeric",
+        "settings": {
+          "foreground": "#b5cea8"
+        }
+      },
+      {
+        "scope": "entity.name.function",
+        "settings": {
+          "foreground": "#dcdcaa"
+        }
+      },
+      {
+        "scope": "support.function",
+        "settings": {
+          "foreground": "#dcdcaa"
+        }
+      }
+    ]
+  },
+  "editor.semanticHighlighting.enabled": true,
+  "editor.bracketPairColorization.enabled": true,
+  "files.associations": {
+    "*.jsx": "javascriptreact",
+    "*.js": "javascript"
+  }
+}
