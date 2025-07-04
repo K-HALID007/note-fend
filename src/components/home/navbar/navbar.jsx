@@ -60,7 +60,7 @@ const Navbar = () => {
   return (
     <div className="w-full bg-gray-800 text-white flex-shrink-0">
       {/* Title Bar with Tabs - Windows 11 Dark Style */}
-      <div className="h-12 flex items-center justify-between bg-gray-800" style={{paddingLeft: '40px', paddingRight: '32px'}}>
+      <div className="h-12 flex items-center justify-between bg-gray-800 border-b border-gray-700" style={{paddingLeft: '40px', paddingRight: '32px'}}>
         {/* Left: App Icon + Tabs */}
         <div className="flex items-center gap-3 flex-1 min-w-0">
           <div className="w-6 h-6 bg-blue-600 rounded flex items-center justify-center flex-shrink-0">
@@ -120,7 +120,7 @@ const Navbar = () => {
       </div>
 
       {/* Menu Bar - Windows 11 Dark Style */}
-      <div className="h-10 bg-gray-800 flex items-center text-sm relative gap-6" style={{paddingLeft: '100px', paddingRight: '32px'}} ref={dropdownRef}>
+      <div className="h-10 bg-gray-800 flex items-center text-sm relative gap-6 border-b border-gray-700" style={{paddingLeft: '40px', paddingRight: '32px'}} ref={dropdownRef}>
         {/* File Menu */}
         <div className="relative">
           <button 
@@ -130,60 +130,60 @@ const Navbar = () => {
             File
           </button>
           {activeDropdown === 'file' && (
-            <div className="absolute top-full left-0 mt-1 bg-gray-700 border border-gray-600 shadow-lg min-w-48 z-50 rounded-lg">
-              <div className="py-2">
+            <div className="absolute top-full left-0 mt-1 bg-gray-700 border border-gray-600 shadow-lg min-w-72 z-50 rounded-lg">
+              <div className="py-6 space-y-4">
                 <button 
-                  className="w-full text-left px-4 py-2 hover:bg-gray-600 flex justify-between items-center text-gray-200"
+                  className="w-full text-left px-8 py-5 hover:bg-gray-600 flex justify-between items-center text-gray-200 transition-colors rounded mx-4 text-base"
                   onClick={() => handleMenuItemClick(newFile)}
                 >
                   <span>New</span>
-                  <span className="text-gray-400 text-xs">Ctrl+N</span>
+                  <span className="text-gray-400 text-sm">Ctrl+N</span>
                 </button>
                 <button 
-                  className="w-full text-left px-4 py-2 hover:bg-gray-600 flex justify-between items-center text-gray-200"
+                  className="w-full text-left px-8 py-5 hover:bg-gray-600 flex justify-between items-center text-gray-200 transition-colors rounded mx-4 text-base"
                   onClick={() => handleMenuItemClick(() => window.open(window.location.href, '_blank'))}
                 >
                   <span>New Window</span>
-                  <span className="text-gray-400 text-xs">Ctrl+Shift+N</span>
+                  <span className="text-gray-400 text-sm">Ctrl+Shift+N</span>
                 </button>
                 <button 
-                  className="w-full text-left px-4 py-2 hover:bg-gray-600 flex justify-between items-center text-gray-200"
+                  className="w-full text-left px-8 py-5 hover:bg-gray-600 flex justify-between items-center text-gray-200 transition-colors rounded mx-4 text-base"
                   onClick={() => handleMenuItemClick(openFile)}
                 >
                   <span>Open...</span>
-                  <span className="text-gray-400 text-xs">Ctrl+O</span>
+                  <span className="text-gray-400 text-sm">Ctrl+O</span>
                 </button>
                 <button 
-                  className="w-full text-left px-4 py-2 hover:bg-gray-600 flex justify-between items-center text-gray-200"
+                  className="w-full text-left px-8 py-5 hover:bg-gray-600 flex justify-between items-center text-gray-200 transition-colors rounded mx-4 text-base"
                   onClick={() => handleMenuItemClick(saveFile)}
                 >
                   <span>Save</span>
-                  <span className="text-gray-400 text-xs">Ctrl+S</span>
+                  <span className="text-gray-400 text-sm">Ctrl+S</span>
                 </button>
                 <button 
-                  className="w-full text-left px-4 py-2 hover:bg-gray-600 flex justify-between items-center text-gray-200"
+                  className="w-full text-left px-8 py-5 hover:bg-gray-600 flex justify-between items-center text-gray-200 transition-colors rounded mx-4 text-base"
                   onClick={() => handleMenuItemClick(saveAsFile)}
                 >
                   <span>Save As...</span>
-                  <span className="text-gray-400 text-xs">Ctrl+Shift+S</span>
+                  <span className="text-gray-400 text-sm">Ctrl+Shift+S</span>
                 </button>
-                <hr className="border-gray-600 my-2" />
+                <hr className="border-gray-600 my-5 mx-4" />
                 <button 
-                  className="w-full text-left px-4 py-2 hover:bg-gray-600 text-gray-200"
+                  className="w-full text-left px-8 py-5 hover:bg-gray-600 text-gray-200 transition-colors rounded mx-4 text-base"
                   onClick={() => handleMenuItemClick(() => window.print())}
                 >
                   Page Setup...
                 </button>
                 <button 
-                  className="w-full text-left px-4 py-2 hover:bg-gray-600 flex justify-between items-center text-gray-200"
+                  className="w-full text-left px-8 py-5 hover:bg-gray-600 flex justify-between items-center text-gray-200 transition-colors rounded mx-4 text-base"
                   onClick={() => handleMenuItemClick(() => window.print())}
                 >
                   <span>Print...</span>
-                  <span className="text-gray-400 text-xs">Ctrl+P</span>
+                  <span className="text-gray-400 text-sm">Ctrl+P</span>
                 </button>
-                <hr className="border-gray-600 my-2" />
+                <hr className="border-gray-600 my-5 mx-4" />
                 <button 
-                  className="w-full text-left px-4 py-2 hover:bg-gray-600 text-gray-200"
+                  className="w-full text-left px-8 py-5 hover:bg-gray-600 text-gray-200 transition-colors rounded mx-4 text-base"
                   onClick={() => handleMenuItemClick(() => window.close())}
                 >
                   Exit
@@ -202,66 +202,66 @@ const Navbar = () => {
             Edit
           </button>
           {activeDropdown === 'edit' && (
-            <div className="absolute top-full left-0 mt-1 bg-gray-700 border border-gray-600 shadow-lg min-w-48 z-50 rounded-lg">
-              <div className="py-2">
+            <div className="absolute top-full left-0 mt-1 bg-gray-700 border border-gray-600 shadow-lg min-w-72 z-50 rounded-lg">
+              <div className="py-6 space-y-4">
                 <button 
-                  className="w-full text-left px-4 py-2 hover:bg-gray-600 flex justify-between items-center text-gray-200"
+                  className="w-full text-left px-8 py-5 hover:bg-gray-600 flex justify-between items-center text-gray-200 transition-colors rounded mx-4 text-base"
                   onClick={() => handleMenuItemClick(undo)}
                 >
                   <span>Undo</span>
-                  <span className="text-gray-400 text-xs">Ctrl+Z</span>
+                  <span className="text-gray-400 text-sm">Ctrl+Z</span>
                 </button>
-                <hr className="border-gray-600 my-2" />
+                <hr className="border-gray-600 my-5 mx-4" />
                 <button 
-                  className="w-full text-left px-4 py-2 hover:bg-gray-600 flex justify-between items-center text-gray-200"
+                  className="w-full text-left px-8 py-5 hover:bg-gray-600 flex justify-between items-center text-gray-200 transition-colors rounded mx-4 text-base"
                   onClick={() => handleMenuItemClick(cut)}
                 >
                   <span>Cut</span>
-                  <span className="text-gray-400 text-xs">Ctrl+X</span>
+                  <span className="text-gray-400 text-sm">Ctrl+X</span>
                 </button>
                 <button 
-                  className="w-full text-left px-4 py-2 hover:bg-gray-600 flex justify-between items-center text-gray-200"
+                  className="w-full text-left px-8 py-5 hover:bg-gray-600 flex justify-between items-center text-gray-200 transition-colors rounded mx-4 text-base"
                   onClick={() => handleMenuItemClick(copy)}
                 >
                   <span>Copy</span>
-                  <span className="text-gray-400 text-xs">Ctrl+C</span>
+                  <span className="text-gray-400 text-sm">Ctrl+C</span>
                 </button>
                 <button 
-                  className="w-full text-left px-4 py-2 hover:bg-gray-600 flex justify-between items-center text-gray-200"
+                  className="w-full text-left px-8 py-5 hover:bg-gray-600 flex justify-between items-center text-gray-200 transition-colors rounded mx-4 text-base"
                   onClick={() => handleMenuItemClick(paste)}
                 >
                   <span>Paste</span>
-                  <span className="text-gray-400 text-xs">Ctrl+V</span>
+                  <span className="text-gray-400 text-sm">Ctrl+V</span>
                 </button>
-                <hr className="border-gray-600 my-2" />
+                <hr className="border-gray-600 my-5 mx-4" />
                 <button 
-                  className="w-full text-left px-4 py-2 hover:bg-gray-600 flex justify-between items-center text-gray-200"
+                  className="w-full text-left px-8 py-5 hover:bg-gray-600 flex justify-between items-center text-gray-200 transition-colors rounded mx-4 text-base"
                   onClick={() => handleMenuItemClick(() => setShowFindDialog(true))}
                 >
                   <span>Find...</span>
-                  <span className="text-gray-400 text-xs">Ctrl+F</span>
+                  <span className="text-gray-400 text-sm">Ctrl+F</span>
                 </button>
                 <button 
-                  className="w-full text-left px-4 py-2 hover:bg-gray-600 flex justify-between items-center text-gray-200"
+                  className="w-full text-left px-8 py-5 hover:bg-gray-600 flex justify-between items-center text-gray-200 transition-colors rounded mx-4 text-base"
                   onClick={() => handleMenuItemClick(() => setShowReplaceDialog(true))}
                 >
                   <span>Replace...</span>
-                  <span className="text-gray-400 text-xs">Ctrl+H</span>
+                  <span className="text-gray-400 text-sm">Ctrl+H</span>
                 </button>
-                <hr className="border-gray-600 my-2" />
+                <hr className="border-gray-600 my-5 mx-4" />
                 <button 
-                  className="w-full text-left px-4 py-2 hover:bg-gray-600 flex justify-between items-center text-gray-200"
+                  className="w-full text-left px-8 py-5 hover:bg-gray-600 flex justify-between items-center text-gray-200 transition-colors rounded mx-4 text-base"
                   onClick={() => handleMenuItemClick(selectAll)}
                 >
                   <span>Select All</span>
-                  <span className="text-gray-400 text-xs">Ctrl+A</span>
+                  <span className="text-gray-400 text-sm">Ctrl+A</span>
                 </button>
                 <button 
-                  className="w-full text-left px-4 py-2 hover:bg-gray-600 flex justify-between items-center text-gray-200"
+                  className="w-full text-left px-8 py-5 hover:bg-gray-600 flex justify-between items-center text-gray-200 transition-colors rounded mx-4 text-base"
                   onClick={() => handleMenuItemClick(insertDateTime)}
                 >
                   <span>Time/Date</span>
-                  <span className="text-gray-400 text-xs">F5</span>
+                  <span className="text-gray-400 text-sm">F5</span>
                 </button>
               </div>
             </div>
@@ -277,29 +277,29 @@ const Navbar = () => {
             View
           </button>
           {activeDropdown === 'view' && (
-            <div className="absolute top-full left-0 mt-1 bg-gray-700 border border-gray-600 shadow-lg min-w-48 z-50 rounded-lg">
-              <div className="py-2">
+            <div className="absolute top-full left-0 mt-1 bg-gray-700 border border-gray-600 shadow-lg min-w-72 z-50 rounded-lg">
+              <div className="py-6 space-y-4">
                 <div className="relative group">
-                  <button className="w-full text-left px-4 py-2 hover:bg-gray-600 flex justify-between items-center text-gray-200">
+                  <button className="w-full text-left px-8 py-5 hover:bg-gray-600 flex justify-between items-center text-gray-200 transition-colors rounded mx-4 text-base">
                     <span>Zoom</span>
                     <span className="text-gray-400">▶</span>
                   </button>
-                  <div className="absolute left-full top-0 ml-1 bg-gray-700 border border-gray-600 shadow-lg min-w-32 hidden group-hover:block rounded-lg">
-                    <div className="py-2">
+                  <div className="absolute left-full top-0 ml-1 bg-gray-700 border border-gray-600 shadow-lg min-w-56 hidden group-hover:block rounded-lg">
+                    <div className="py-6 space-y-4">
                       <button 
-                        className="w-full text-left px-4 py-2 hover:bg-gray-600 text-gray-200"
+                        className="w-full text-left px-8 py-5 hover:bg-gray-600 text-gray-200 transition-colors rounded mx-4 text-base"
                         onClick={() => handleMenuItemClick(zoomIn)}
                       >
                         Zoom In
                       </button>
                       <button 
-                        className="w-full text-left px-4 py-2 hover:bg-gray-600 text-gray-200"
+                        className="w-full text-left px-8 py-5 hover:bg-gray-600 text-gray-200 transition-colors rounded mx-4 text-base"
                         onClick={() => handleMenuItemClick(zoomOut)}
                       >
                         Zoom Out
                       </button>
                       <button 
-                        className="w-full text-left px-4 py-2 hover:bg-gray-600 text-gray-200"
+                        className="w-full text-left px-8 py-5 hover:bg-gray-600 text-gray-200 transition-colors rounded mx-4 text-base"
                         onClick={() => handleMenuItemClick(resetZoom)}
                       >
                         Restore Default Zoom
@@ -307,9 +307,9 @@ const Navbar = () => {
                     </div>
                   </div>
                 </div>
-                <hr className="border-gray-600 my-2" />
+                <hr className="border-gray-600 my-5 mx-4" />
                 <button 
-                  className={`w-full text-left px-4 py-2 hover:bg-gray-600 text-gray-200 ${wordWrap ? 'bg-gray-600' : ''}`}
+                  className={`w-full text-left px-8 py-5 hover:bg-gray-600 text-gray-200 transition-colors rounded mx-4 text-base ${wordWrap ? 'bg-gray-600' : ''}`}
                   onClick={() => handleMenuItemClick(toggleWordWrap)}
                 >
                   Word Wrap {wordWrap ? '✓' : ''}
